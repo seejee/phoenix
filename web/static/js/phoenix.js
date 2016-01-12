@@ -85,9 +85,8 @@
 // `channel.leave()`
 //
 
-const window = global;
-
 if(typeof module !== 'undefined' && module.exports) {
+  global.window = global;
   window.WebSocket = require("ws");
   window.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
 }
