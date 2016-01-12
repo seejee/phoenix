@@ -735,3 +735,14 @@ class Timer {
     }, this.timerCalc(this.tries + 1))
   }
 }
+
+if(typeof define === "function" && define.amd) {
+  define("phoenix", [], function() {
+    return {
+      Channel,
+      Socket,
+      LongPoll,
+      Ajax
+    };
+  });
+}

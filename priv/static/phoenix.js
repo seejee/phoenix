@@ -1041,5 +1041,17 @@ var Timer = function () {
   return Timer;
 }();
 
+if (typeof define === "function" && define.amd) {
+  define("phoenix", [], function () {
+    return {
+      Channel: Channel,
+      Socket: Socket,
+      LongPoll: LongPoll,
+      Ajax: Ajax
+    };
+  });
+}
+
 
 })();
+;
