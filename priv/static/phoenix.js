@@ -1,4 +1,4 @@
-if(typeof(exports) === "undefined" && !window.Phoenix){ window.Phoenix = {}; var exports = window.Phoenix; }
+(function() { if(typeof(exports) === "undefined" && !window.Phoenix){ window.Phoenix = {}; var exports = window.Phoenix; }
 
 (function(){
 "use strict";
@@ -100,10 +100,14 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // `channel.leave()`
 //
 
+var context = {};
+
 if (typeof module !== 'undefined' && module.exports) {
-  global.window = global;
-  window.WebSocket = require("ws");
-  window.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+  exports = module.exports;
+  context.WebSocket = require("ws");
+  context.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+} else {
+  context = window;
 }
 
 var VSN = "1.0.0";
@@ -500,7 +504,7 @@ var Socket = exports.Socket = function () {
     this.sendBuffer = [];
     this.ref = 0;
     this.timeout = opts.timeout || DEFAULT_TIMEOUT;
-    this.transport = opts.transport || window.WebSocket || LongPoll;
+    this.transport = opts.transport || context.WebSocket || LongPoll;
     this.heartbeatIntervalMs = opts.heartbeatIntervalMs || 30000;
     this.reconnectAfterMs = opts.reconnectAfterMs || function (tries) {
       return [1000, 2000, 5000, 10000][tries - 1] || 10000;
@@ -888,11 +892,11 @@ var Ajax = exports.Ajax = function () {
   _createClass(Ajax, null, [{
     key: "request",
     value: function request(method, endPoint, accept, body, timeout, ontimeout, callback) {
-      if (window.XDomainRequest) {
+      if (context.XDomainRequest) {
         var req = new XDomainRequest(); // IE8, IE9
         this.xdomainRequest(req, method, endPoint, body, timeout, ontimeout, callback);
       } else {
-        var req = window.XMLHttpRequest ? new XMLHttpRequest() : // IE7+, Firefox, Chrome, Opera, Safari
+        var req = context.XMLHttpRequest ? new XMLHttpRequest() : // IE7+, Firefox, Chrome, Opera, Safari
         new ActiveXObject("Microsoft.XMLHTTP"); // IE6, IE5
         this.xhrRequest(req, method, endPoint, accept, body, timeout, ontimeout, callback);
       }
@@ -1040,17 +1044,7 @@ var Timer = function () {
   return Timer;
 }();
 
-if (typeof define === "function" && define.amd) {
-  define("phoenix", [], function () {
-    return {
-      Channel: Channel,
-      Socket: Socket,
-      LongPoll: LongPoll,
-      Ajax: Ajax
-    };
-  });
-}
-
 
 })();
-;
+
+})();

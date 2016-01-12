@@ -85,10 +85,14 @@
 // `channel.leave()`
 //
 
+var context = {};
+
 if(typeof module !== 'undefined' && module.exports) {
-  global.window = global;
-  window.WebSocket = require("ws");
-  window.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+  exports = module.exports;
+  context.WebSocket      = require("ws");
+  context.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+} else {
+  context = window;
 }
 
 const VSN = "1.0.0"
@@ -378,7 +382,7 @@ export class Socket {
     this.sendBuffer           = []
     this.ref                  = 0
     this.timeout              = opts.timeout || DEFAULT_TIMEOUT
-    this.transport            = opts.transport || window.WebSocket || LongPoll
+    this.transport            = opts.transport || context.WebSocket || LongPoll
     this.heartbeatIntervalMs  = opts.heartbeatIntervalMs || 30000
     this.reconnectAfterMs     = opts.reconnectAfterMs || function(tries){
       return [1000, 2000, 5000, 10000][tries - 1] || 10000
@@ -625,11 +629,11 @@ export class LongPoll {
 export class Ajax {
 
   static request(method, endPoint, accept, body, timeout, ontimeout, callback){
-    if(window.XDomainRequest){
+    if(context.XDomainRequest){
       let req = new XDomainRequest() // IE8, IE9
       this.xdomainRequest(req, method, endPoint, body, timeout, ontimeout, callback)
     } else {
-      let req = window.XMLHttpRequest ?
+      let req = context.XMLHttpRequest ?
                   new XMLHttpRequest() : // IE7+, Firefox, Chrome, Opera, Safari
                   new ActiveXObject("Microsoft.XMLHTTP") // IE6, IE5
       this.xhrRequest(req, method, endPoint, accept, body, timeout, ontimeout, callback)
@@ -733,15 +737,4 @@ class Timer {
       this.callback()
     }, this.timerCalc(this.tries + 1))
   }
-}
-
-if(typeof define === "function" && define.amd) {
-  define("phoenix", [], function() {
-    return {
-      Channel,
-      Socket,
-      LongPoll,
-      Ajax
-    };
-  });
 }

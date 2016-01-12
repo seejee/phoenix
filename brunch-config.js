@@ -5,7 +5,7 @@ exports.config = {
   modules: {
     definition: false,
     wrapper: function(path, code){
-      return "if(typeof(exports) === \"undefined\" && !window.Phoenix){ window.Phoenix = {}; var exports = window.Phoenix; }\n\n(function(){\n" + code + "\n})();\n";
+      return "(function() { if(typeof(exports) === \"undefined\" && !window.Phoenix){ window.Phoenix = {}; var exports = window.Phoenix; }\n\n(function(){\n" + code + "\n})();\n\n})();";
     }
   },
 
