@@ -100,6 +100,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 // `channel.leave()`
 //
 
+var window = global;
+
+if (typeof module !== 'undefined' && module.exports) {
+  window.WebSocket = require("ws");
+  window.XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+}
+
 var VSN = "1.0.0";
 var SOCKET_STATES = { connecting: 0, open: 1, closing: 2, closed: 3 };
 var DEFAULT_TIMEOUT = 10000;
@@ -522,6 +529,7 @@ var Socket = exports.Socket = function () {
       if (uri.charAt(0) !== "/") {
         return uri;
       }
+
       if (uri.charAt(1) === "/") {
         return this.protocol() + ":" + uri;
       }
